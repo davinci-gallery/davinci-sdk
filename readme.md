@@ -33,3 +33,6 @@ main();
 ```
 
 Just like that!
+
+### Prerequisite: 
+> npm install @harmony-js/core
