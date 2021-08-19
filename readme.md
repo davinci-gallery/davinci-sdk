@@ -34,7 +34,7 @@ main();
 
 Just like that!
 
-### Prerequisite: 
+### Prerequisites:
 ```
 > npm install @harmony-js/core
 > npm install node-fetch
