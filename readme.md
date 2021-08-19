@@ -36,3 +36,5 @@ Just like that!
 
 ### Prerequisite: 
 > npm install @harmony-js/core
+> npm install node-fetch
+> npm install form-data
