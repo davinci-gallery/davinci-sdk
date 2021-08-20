@@ -38,7 +38,7 @@ Just like that!
 
 For a more complex NFT there are some extra fields you can submit like:
 
-```json
+```js
 let data = {
     collection  : sdk.collection.image,    // newCollection() or sdk.collection.image
     media       : sdk.media.image,         // image|model|music|video|book
