@@ -107,9 +107,9 @@ Then use the collection address in your NFT data:
 
 ### Final Notes
 
-• You can upload up to 5 NFTs per day when verified
-• If not verified yet, only 1 NFT will be allowed daily
-• Ask our community managers for verification in our social channels
-• Keep your files and images up to 30 MB in size
-• Copyrighted material is prohibited and will get you banned from our platform
-• Adult content goes in its own category (9), please keep our space safe for children
+- You can upload up to 5 NFTs per day when verified
+- If not verified yet, only 1 NFT will be allowed daily
+- Ask our community managers for verification in our social channels
+- Keep your files and images up to 30 MB in size
+- Copyrighted material is prohibited and will get you banned from our platform
+- Adult content goes in its own category (9), please keep our space safe for children
