@@ -34,9 +34,67 @@ main();
 
 Just like that!
 
+## Token data
+
+For a more complex NFT there are some extra fields you can submit like:
+
+```
+    let data = {
+        collection : sdk.collection.image,    // newCollection() or sdk.collection.image
+        media      : sdk.media.image,         // image|model|music|video|book
+        category   : 0,                       // 0:digital 1:painting 2:photos 3:kids 8:memes 9:adult,
+        name       : 'My first token',
+        description: 'This is a cool token freshly minted',
+        tags       : 'nft token cool',        // Words separated by spaces
+        saletype   : 0,                       // 0:market 1:auction 2:notforsale
+        saleprice  : 10.00,                   // Initial price if auction
+        reserve    : 20.00,                   // Auction only, double the initial price
+        inidate    : '2021-01-31',            // Auction start date
+        enddate    : '2021-01-31',            // Auction end date
+        royalties  : 10.00,                   // Percentage in sales for the author
+        copies     : 10,                      // Number of copies available for sale
+        unlock     : false,                   // To claim stuff in external sites
+        unlockcode : 'unlock code',           // Secret code if unlocked
+        file       : './work/sdk/image.jpg',  // Absolute or relative path to file
+        cover      : './work/sdk/cover.jpg'   // Cover image if resource is not image
+    };
+```
+
+
+## Collections
+
+All NFTs will be added to collections, most NFTs will be grouped in public DaVinci collections that oyu can choose according to the media type as:
+
+```
+sdk.collection.image
+sdk.collection.model
+sdk.collection.music
+sdk.collection.video
+sdk.collection.book
+```
+
+If you want to create your own private collection for your music, paintings, etc you can do so using the sdk.newCollection method like:
+
+```
+    let info = await sdk.newCollection('Iron Maiden', '2021 Heavy Metal World Tour', './eddie.jpg');
+    console.log('New collection', info.address);
+```
+
+Then use the collection address in your NFT data
+
+
 ### Prerequisites:
 ```
 > npm install @harmony-js/core
 > npm install node-fetch
 > npm install form-data
 ```
+
+### Final Notes
+
+• You can upload up to 5 NFTs per day when verified
+• If not verified yet, only 1 NFT will be allowed daily
+• Ask our community managers for verification in our social channels
+• Keep your files and images up to 30 MB in size
+• Copyrighted material is prohibited and will get you banned from our platform
+• Adult content goes in its own category (9), please keep our space safe for children
