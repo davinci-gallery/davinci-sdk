@@ -64,7 +64,7 @@ let data = {
 
 ## Collections
 
-All NFTs will be added to collections, most NFTs will be grouped in public DaVinci collections that oyu can choose according to the media type as:
+All NFTs will be added to collections, most NFTs will be grouped in public DaVinci collections that you can choose according to the media type as:
 
 ```
 sdk.collection.image
@@ -78,11 +78,24 @@ If you want to create your own private collection for your music, paintings, etc
 
 ```js
 let info = await sdk.newCollection('Iron Maiden', '2021 Heavy Metal World Tour', './eddie.jpg');
-console.log('New collection', info.address);
+console.log('New collection', info);
+let myCollection = info.address;
 ```
 
-Then use the collection address in your NFT data
+Then use the collection address in your NFT data:
 
+```js
+    let data = {
+        collection  : myCollection,
+        media       : sdk.media.music,
+        name        : 'Heaven can wait',
+        description : 'This is the first song of the tour',
+        tags        : 'iron maiden tour heavy metal'
+        saleprice   : 5.00,
+        file        : './heaven.mp3',
+        cover       : './heaven.jpg',
+    };
+````
 
 ### Prerequisites:
 ```
