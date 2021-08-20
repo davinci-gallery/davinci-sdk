@@ -9,7 +9,7 @@ All you need to do is include the SDK file in your project then call any method 
 ```js
 
 let SDK = require('./davinci-sdk.js');
-let sdk = new SDK(process.env.CHAINID); // 1.mainnet 2.testnet
+let sdk = new SDK(2); // 1.mainnet 2.testnet
 
 
 async function main() {
