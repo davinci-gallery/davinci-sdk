@@ -18,10 +18,10 @@ async function main() {
 
     // To create an NFT
     let data = {
-        name       : 'My first token',
-        description: 'This is a cool token freshly minted',
-        saleprice  : 10.00,
-        file       : './image.jpg',   // absolute or relative path to image
+        name        : 'My first token',
+        description : 'This is a cool token freshly minted',
+        saleprice   : 10.00,
+        file        : './image.jpg',   // absolute or relative path to image
     };
 
     let info = await sdk.createNFT(data);
