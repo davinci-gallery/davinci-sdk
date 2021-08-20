@@ -90,10 +90,10 @@ Then use the collection address in your NFT data:
         media       : sdk.media.music,
         name        : 'Heaven can wait',
         description : 'This is the first song of the tour',
-        tags        : 'iron maiden tour heavy metal'
+        tags        : 'iron maiden tour heavy metal',
         saleprice   : 5.00,
         file        : './heaven.mp3',
-        cover       : './heaven.jpg',
+        cover       : './heaven.jpg'
     };
 ````
 
