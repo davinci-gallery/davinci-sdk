@@ -38,26 +38,26 @@ Just like that!
 
 For a more complex NFT there are some extra fields you can submit like:
 
-```
-    let data = {
-        collection : sdk.collection.image,    // newCollection() or sdk.collection.image
-        media      : sdk.media.image,         // image|model|music|video|book
-        category   : 0,                       // 0:digital 1:painting 2:photos 3:kids 8:memes 9:adult,
-        name       : 'My first token',
-        description: 'This is a cool token freshly minted',
-        tags       : 'nft token cool',        // Words separated by spaces
-        saletype   : 0,                       // 0:market 1:auction 2:notforsale
-        saleprice  : 10.00,                   // Initial price if auction
-        reserve    : 20.00,                   // Auction only, double the initial price
-        inidate    : '2021-01-31',            // Auction start date
-        enddate    : '2021-01-31',            // Auction end date
-        royalties  : 10.00,                   // Percentage in sales for the author
-        copies     : 10,                      // Number of copies available for sale
-        unlock     : false,                   // To claim stuff in external sites
-        unlockcode : 'unlock code',           // Secret code if unlocked
-        file       : './work/sdk/image.jpg',  // Absolute or relative path to file
-        cover      : './work/sdk/cover.jpg'   // Cover image if resource is not image
-    };
+```json
+let data = {
+    collection  : sdk.collection.image,    // newCollection() or sdk.collection.image
+    media       : sdk.media.image,         // image|model|music|video|book
+    category    : 0,                       // 0:digital 1:painting 2:photos 3:kids 8:memes 9:adult,
+    name        : 'My first token',
+    description : 'This is a cool token freshly minted',
+    tags        : 'nft token cool',        // Words separated by spaces
+    saletype    : 0,                       // 0:market 1:auction 2:notforsale
+    saleprice   : 10.00,                   // Initial price if auction
+    reserve     : 20.00,                   // Auction only, double the initial price
+    inidate     : '2021-01-31',            // Auction start date
+    enddate     : '2021-01-31',            // Auction end date
+    royalties   : 10.00,                   // Percentage in sales for the author
+    copies      : 10,                      // Number of copies available for sale
+    unlock      : false,                   // To claim stuff in external sites
+    unlockcode  : 'unlock code',           // Secret code if unlocked
+    file        : './work/sdk/image.jpg',  // Absolute or relative path to file
+    cover       : './work/sdk/cover.jpg'   // Cover image if resource is not image
+};
 ```
 
 
@@ -75,9 +75,9 @@ sdk.collection.book
 
 If you want to create your own private collection for your music, paintings, etc you can do so using the sdk.newCollection method like:
 
-```
-    let info = await sdk.newCollection('Iron Maiden', '2021 Heavy Metal World Tour', './eddie.jpg');
-    console.log('New collection', info.address);
+```js
+let info = await sdk.newCollection('Iron Maiden', '2021 Heavy Metal World Tour', './eddie.jpg');
+console.log('New collection', info.address);
 ```
 
 Then use the collection address in your NFT data
