@@ -85,16 +85,16 @@ let myCollection = info.address;
 Then use the collection address in your NFT data:
 
 ```js
-    let data = {
-        collection  : myCollection,
-        media       : sdk.media.music,
-        name        : 'Heaven can wait',
-        description : 'This is the first song of the tour',
-        tags        : 'iron maiden tour heavy metal',
-        saleprice   : 5.00,
-        file        : './heaven.mp3',
-        cover       : './heaven.jpg'
-    };
+let data = {
+    collection  : myCollection,
+    media       : sdk.media.music,
+    name        : 'Heaven can wait',
+    description : 'This is the first song of the tour',
+    tags        : 'iron maiden tour heavy metal',
+    saleprice   : 5.00,
+    file        : './heaven.mp3',
+    cover       : './heaven.jpg'
+};
 ````
 
 ### Prerequisites:
