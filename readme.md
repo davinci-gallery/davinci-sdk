@@ -34,6 +34,7 @@ main();
 
 Just like that!
 
+
 ## Token data
 
 For a more complex NFT there are some extra fields you can submit like:
@@ -49,10 +50,10 @@ let data = {
     saletype    : 0,                       // 0:market 1:auction 2:notforsale
     saleprice   : 10.00,                   // Initial price if auction
     reserve     : 20.00,                   // Auction only, double the initial price
-    inidate     : '2021-01-31',            // Auction start date
+    inidate     : '2021-01-20',            // Auction start date
     enddate     : '2021-01-31',            // Auction end date
     royalties   : 10.00,                   // Percentage in sales for the author
-    copies      : 10,                      // Number of copies available for sale
+    copies      : 100,                     // Number of copies available for sale
     unlock      : false,                   // To claim stuff in external sites
     unlockcode  : 'unlock code',           // Secret code if unlocked
     file        : './work/sdk/image.jpg',  // Absolute or relative path to file
@@ -89,6 +90,7 @@ Then use the collection address in your NFT data
 > npm install node-fetch
 > npm install form-data
 ```
+
 
 ### Final Notes
 
