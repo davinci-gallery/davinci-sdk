@@ -3,7 +3,7 @@
 
 DaVinci SDK is a simple but powerful tool to interact with DaVinci platform in the browser. You can create NFTs or collections, then sell, buy, auction, bid, claim, explore all the platform has to offer and much more.
 
-All you need to do is include the SDK file in your project then call any method like sdk.buy with some data and presto!
+All you need to do is include the SDK file in your project then call any method like sdk.explore() or sdk.buy(nft, owner) and presto!
 
 
 ```html
