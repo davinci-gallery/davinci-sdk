@@ -2,6 +2,6 @@
 
 DaVinci SDK is a tool for interacting with DaVinci NFT platform. It is suitable for CLI and Web use by just including the respective library.
 
-[DaVinci CLI](./sdk-cli) For use in terminal
+[DaVinci CLI](./sdk-cli) - for use in terminal
 
-[DaVinci WEB](./sdk-web) For use in browsers
+[DaVinci WEB](./sdk-web) - for use in browsers
