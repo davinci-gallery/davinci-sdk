@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DaVinci SDK</title>
+</head>
+<body>
+	<h5>DaVinci SDK Test</h5>
+    <div>
+    	<button onclick="explore()">Explore</button>
+        <button onclick="creations()">Creations</button>
+        <button onclick="signStuff()">Sign</button>
+    </div>
+    <div>
+        <textarea id="result" cols="80" rows="20"></textarea>
+    </div>
+</body>
+<script src="./web3.min.js"></script>
+<script src="./HarmonyJs.browser.js"></script>
+<script src="./davinci-web.js"></script>
+<script>
+var sdk = null;
+
+function $(id){ return document.getElementById(id); }
+
+function main() {
+	sdk = new DaVinciSDK(0);               // 0.local 1.mainnet 2.testnet
+	sdk.newWallet(sdk.walletType.harmony); // harmony or metamask
+}
+
+async function explore() {
+    let list = await sdk.explore();
+    console.log('List', list);
+    $('result').innerHTML = JSON.stringify(list, null, 4);
+}
+
+async function creations() {
+    let list = await sdk.creations('0x8c7d955a7d6568a10cc6d9774e9eae7ff5191bd0');
+    console.log('List', list);
+    $('result').innerHTML = JSON.stringify(list, null, 4);
+}
+
+async function signStuff() {
+	let amount = 100;
+	let sendr  = 'one1337e2knav452zrxxm9m5a84w0l63jx7smt5sgm';
+	let recvr  = 'one1engynr2aur9vsf3h4x2g4ld4h5et82zgcynuct';
+	let tx = sdk.harmony.transactions.newTx({
+        to: recvr,
+        //value: new sdk.harmony.utils.Unit(amount).asOne().toWei(),
+        data: '0x85dca312121b082f39dd34192d69dffd93c0add33dac13f7846f2975fba845c6', // 'apple' = web3.utils.sha3('apple')
+        value: 0,
+        shardID: 0,
+        toShardID: 0,
+        //gasLimit: '1000000',
+        //gasPrice: new sdk.harmony.utils.Unit('5').asGwei().toWei()
+        gasLimit: '0',
+        gasPrice: '0'
+    });
+    try {
+    	let sign = await sdk.wallet.wallet.signTransaction(tx);
+    	console.log('Signed', sign);
+    } catch(ex) {
+    	console.error('Error', ex);
+    }
+}
+
+window.onload = main;
+</script>
+</html>
