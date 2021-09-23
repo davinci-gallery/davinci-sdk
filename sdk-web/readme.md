@@ -3,7 +3,7 @@
 
 DaVinci SDK is a simple but powerful tool to interact with DaVinci platform in the browser. You can create NFTs or collections, then sell, buy, auction, bid, claim, explore all the platform has to offer and much more.
 
-All you need to do is include the SDK file in your project then call any method like sdk.explore() or sdk.buy(nft, owner) and presto!
+All you need to do is include the SDK file in your project then call any method like sdk.buy with some data and presto!
 
 
 ```html
@@ -15,7 +15,6 @@ All you need to do is include the SDK file in your project then call any method 
 </head>
 <body>
 	<h5>DaVinci SDK Test</h5>
-	<button onclick="buyStuff()">BUY NFT</button>
 </body>
 <script src="./web3.min.js"></script>
 <script src="./HarmonyJs.browser.js"></script>
@@ -28,17 +27,6 @@ function main() {
 	sdk.newWallet(sdk.walletType.harmony); // harmony or metamask
 }
 
-async function buyStuff() {
-    try {
-    	let nft = '0xc9dff7a274f608f844b4041ef0d5cc44d46b5312';
-    	let own = '0x8c7d955a7d6568a10cc6d9774e9eae7ff5191bd0';
-    	let res = await sdk.buy(nft, own);
-    	console.log('Response', res);
-    } catch(ex) {
-    	console.error('Error', ex);
-    }
-}
-
 window.onload = main;
 </script>
 </html>
@@ -46,3 +34,30 @@ window.onload = main;
 
 Just like that!
 
+
+## Create NFT
+
+``` js
+// To create an NFT
+let file = document.getElementById('file').files[0]
+let data = {
+    name        : 'My first token',
+    description : 'This is a cool token freshly minted',
+    saleprice   : 10.00,
+    file        : file
+}
+
+let info = await sdk.createNFT(data)
+console.log('New token', info)
+```
+
+## More examples
+``` js
+sdk.newCollection('Paintings', 'Description', file)
+sdk.explore()
+sdk.creations(address)
+sdk.buy(nftID, owner)
+sdk.bid(nftID, amount)
+```
+
+Note: You will need to include scripts `web3` for Metamask and `HarmonyJs` for Harmony wallets

@@ -2,16 +2,43 @@
 <html>
 <head>
 	<title>DaVinci SDK</title>
+    <style>
+        div { margin: 20px 0; }
+        table { width: 600px; min-height: 200px; margin: 20px 0; border: 1px solid #ccc; }
+        textarea { width: 600px; height: 200px; margin: 20px 0; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
 	<h5>DaVinci SDK Test</h5>
     <div>
     	<button onclick="explore()">Explore</button>
         <button onclick="creations()">Creations</button>
-        <button onclick="signStuff()">Sign</button>
+        <!-- <button onclick="signit()">Sign Stuff</button> -->
+        <button onclick="login()">Login</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <table id="list">
+        <thead>
+            <tr><th>address</th><th>price</th><th>action</th></tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="3">No NFTs listed</td></tr>
+        </tbody>
+    </table>
+    <div>
+        <label>NFT:</label>
+        <input type="text" id="name" value="SDK Test">
+        <input type="file" id="file">
+        <button onclick="createNFT()">Create NFT</button> 
     </div>
     <div>
-        <textarea id="result" cols="80" rows="20"></textarea>
+        <label>Collection:</label>
+        <input type="text" id="namec" value="SDK Test">
+        <input type="file" id="filec">
+        <button onclick="newCollection()">New Collection</button> 
+    </div>
+    <div>
+        <textarea id="result" cols="80" rows="5"></textarea>
     </div>
 </body>
 <script src="./web3.min.js"></script>
@@ -31,15 +58,28 @@ async function explore() {
     let list = await sdk.explore();
     console.log('List', list);
     $('result').innerHTML = JSON.stringify(list, null, 4);
+    listnfts(list);
 }
 
 async function creations() {
-    let list = await sdk.creations('0x8c7d955a7d6568a10cc6d9774e9eae7ff5191bd0');
+    let list = await sdk.creations(sdk.account);
     console.log('List', list);
     $('result').innerHTML = JSON.stringify(list, null, 4);
+    listnfts(list);
 }
 
-async function signStuff() {
+function listnfts(list) {
+    let table = $('list');
+    let html  = '';
+    let n = Math.min(list.length, 10);
+    for (var i = 0; i < n; i++) {
+        let row = list[i];
+        html += `<tr><td>${row.address}</td><td>${row.saleprice}</td><td><a href="javascript:void(0)" onclick="buyit('${row.address}', '${row.ownerid}')">Buy</a></td></tr>`;
+    }
+    table.tBodies[0].innerHTML = html;
+}
+
+async function signit() {
 	let amount = 100;
 	let sendr  = 'one1337e2knav452zrxxm9m5a84w0l63jx7smt5sgm';
 	let recvr  = 'one1engynr2aur9vsf3h4x2g4ld4h5et82zgcynuct';
@@ -58,10 +98,69 @@ async function signStuff() {
     try {
     	let sign = await sdk.wallet.wallet.signTransaction(tx);
     	console.log('Signed', sign);
+        $('result').innerHTML = 'Transaction signed\n'+JSON.stringify(sign.signature, null, 4);
     } catch(ex) {
     	console.error('Error', ex);
+        $('result').innerHTML = ex;
     }
 }
+
+async function login() {
+    let act = await sdk.wallet.wallet.getAccount();
+    $('result').innerHTML = 'Logged in as '+act.address;
+}
+
+async function logout() {
+    sdk.wallet.wallet.forgetIdentity();
+    $('result').innerHTML = 'Logged out';
+}
+
+async function buyit(nft, own) {
+    console.log('NFT', nft);
+    let res = await sdk.buy(nft, own);
+    console.log('Res', res);
+}
+
+async function createNFT() {
+    console.log('Creating NFT...');
+    let data = {
+        collection : sdk.collection.image,
+        media      : sdk.media.image,
+        category   : 0,
+        name       : $('name').value || 'SDK Test',
+        description: 'SDK test token',
+        tags       : 'sdk test',
+        saletype   : 0,
+        saleprice  : 10,
+        reserve    : 0,
+        inidate    : '',
+        enddate    : '',
+        royalties  : 10,
+        copies     : 10,
+        unlock     : '',
+        unlockcode : '',
+        file       : $('file').files[0],
+        cover      : null
+    }
+    console.log('Data', data);
+    $('result').innerHTML = data.name + ' - ' + data.file.name;
+    let res = await sdk.createNFT(data);
+    console.log('Res', res);
+    $('result').innerHTML = 'Result: '+JSON.stringify(res, null, 4);
+}
+
+async function newCollection() {
+    console.log('Creating collection...');
+    let name = $('namec').value || 'SDK Test';
+    let desc = 'SDK Collection';
+    let file = $('filec').files[0];
+    console.log('Data', name, file.name);
+    $('result').innerHTML = name + ' - ' + file.name;
+    let res = await sdk.newCollection(name, desc, file);
+    console.log('Res', res);
+    $('result').innerHTML = 'Result: '+JSON.stringify(res, null, 4);
+}
+
 
 window.onload = main;
 </script>

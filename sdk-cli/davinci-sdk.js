@@ -8,9 +8,8 @@ let FormData    = require('form-data');
 let Token1155   = require('../contracts/token1155.json');
 let Market      = require('../contracts/market.json');
 let Auction     = require('../contracts/auction.json');
-//let Wallet      = require('./wallet.js');
 
-function log(...args) { console.warn(args.join(' ')); }
+
 
 function addDays(date, days) { 
     let dd = new Date(date);
@@ -135,15 +134,15 @@ class DaVinciSDK {
         this.network = network;
         this.harmony = new Harmony(this.neturl, { chainType: 'hmy', chainId: this.chainid });
         this.collection = this.config[this.netname].collections;
-        log('--', new Date());
-        log(`DaVinci SDK ${this.version} is ready in ${this.netname}`);
+        console.log('--', new Date());
+        console.log(`DaVinci SDK ${this.version} is ready in ${this.netname}`);
         let inBrowser = (typeof(navigator)!=='undefined');
-        log('In browser?', inBrowser);
+        console.log('In browser?', inBrowser);
     }
 
     setNetwork(network=2) {
         this.network = network;
-        log('SDK network changed to', this.netname);
+        console.log('SDK network changed to', this.netname);
     }
 
     setAccount(key) {
@@ -155,20 +154,20 @@ class DaVinciSDK {
 
     async saveFile(file, cover, media) {
         if(!file){ return; }
-        log('Saving file', file);
-        log('To server', this.server);
+        console.log('Saving file', file);
+        console.log('To server', this.server);
         try {       
             var data = new FormData();
             data.append('media', media);
             let mime = getMimeType(file);
             let buff = fs.readFileSync(file);
-            log('File type', mime);
+            console.log('File type', mime);
             //data.append('file', buff);
             data.append('file', buff, {filepath:file, contentType:mime}); 
             if(cover){ 
                 let mimc = getMimeType(cover);
                 let bufc = fs.readFileSync(cover);
-                log('Cover type', mimc);
+                console.log('Cover type', mimc);
                 //data.append('cover', bufc); 
                 data.append('cover', bufc, {filepath:cover, contentType:mimc}); 
                 //data.append('file', fs.createReadStream(path.join(__dirname, file)));
@@ -216,7 +215,7 @@ class DaVinciSDK {
     }
 
     async mintCollection(rec, mhash) {
-        log('Mint collection for metahash', mhash);
+        console.log('Mint collection for metahash', mhash);
 
         try {
             let name   = rec.name;
@@ -247,18 +246,18 @@ class DaVinciSDK {
             }
 
             if (ok) {
-                log('Confirmed');
-                log('TX', txid);
+                console.log('Confirmed');
+                console.log('TX', txid);
                 if(res.options && res.options.address){ 
                     let address = res.options.address
-                    log('Deployed at ', address);
+                    console.log('Deployed at ', address);
                     return {address:address};
                 } else {
                     console.error('Error: no contract address');
                     return {error: 'Error creating collection, tx id: '+txid};
                 }
             } else {
-                log('Rejected', txid);
+                console.log('Rejected', txid);
                 return {error: 'Transaction rejected', txid: txid};
             }
         } catch(ex){ 
@@ -271,7 +270,7 @@ class DaVinciSDK {
 
     // Creates a new 1155 token collection
     async newCollection(name, desc, file) {
-        log('New collection');
+        console.log('New collection');
         if(!this.account){ console.warn('Wallet not connected, please run sdk.setAccount(yourKey)'); return; }
         if(!name){ console.warn('Collection name is required'); return; }
         if(!desc){ console.warn('Collection decription is required'); return; }
@@ -279,10 +278,10 @@ class DaVinciSDK {
         if(desc.length>1000){ console.warn('Description can not be longer than 1000 chars'); return; } 
 
         // Saving file to IPFS and getting hash
-        log('Saving file, please wait...');
+        console.log('Saving file, please wait...');
         let hash = await this.saveFile(file, null, 'image');
         if(!hash){ console.error('Error saving file to IPFS'); return; }
-        log('IPFS Hash', hash); 
+        console.log('IPFS Hash', hash); 
 
         let data = {
             type  : '1155',
@@ -304,12 +303,12 @@ class DaVinciSDK {
             external_link : 'No'
         };
 
-        log('Saving metadata, please wait...');
+        console.log('Saving metadata, please wait...');
         let mhash = await this.saveMetadata(meta);
         if(!mhash){ console.error('Error saving metadata to IPFS'); return; }
-        log('Meta Hash', mhash);
+        console.log('Meta Hash', mhash);
 
-        log('Creating collection, please wait...');
+        console.log('Creating collection, please wait...');
         let rec = await this.mintCollection(data, mhash);
         if(!rec || rec.error){ console.error('Error creating collection'); return; }
         let address = rec.address.toLowerCase();
@@ -322,7 +321,7 @@ class DaVinciSDK {
     }
 
     async mintToken(nft) {
-        log('Minting NFT...');
+        console.log('Minting NFT...');
         try {
             nft.fees = [];
             if(nft.royalties>0){
@@ -335,13 +334,13 @@ class DaVinciSDK {
             let res = await ctr.methods.mint(nft.tokenid, nft.fees, nft.copies, nft.metahash).send(gas);
 
             if (res.transaction.txStatus == 'REJECTED') { 
-                log('Rejected');
+                console.log('Rejected');
                 return {error: 'REJECTED', txid: res.transaction.id};
             } else if (res.transaction.txStatus == 'CONFIRMED') { 
-                log('Token minted in tx', res.transaction.id);
+                console.log('Token minted in tx', res.transaction.id);
                 return {status:'CONFIRMED', txid:res.transaction.id, address:nft.address};
             } else { 
-                log('Error: Unknown status', res.transaction?.txStatus);
+                console.log('Error: Unknown status', res.transaction?.txStatus);
                 return {error: 'Unknown status: '+(res.transaction?.txStatus||'Unknown')}; 
             }
         } catch(ex){ 
@@ -353,7 +352,7 @@ class DaVinciSDK {
     }
 
     async createNFT(nft) {
-        log('New token');
+        console.log('New token');
         if(!this.account){ console.warn('Wallet not connected, please run sdk.setAccount(yourKey)'); return; }
 
         // Validate input
@@ -393,7 +392,7 @@ class DaVinciSDK {
         nft.unlockcode = nft.unlockcode || '';
 
         if(nft.media!='image' && !nft.cover){ 
-            log('If NFT is not an image then cover must be provided (jpg or png)'); 
+            console.log('If NFT is not an image then cover must be provided (jpg or png)'); 
             return;
         }
 
@@ -401,27 +400,27 @@ class DaVinciSDK {
 
         // Verify user approved DaVinci as operator
         if(nft.onsale) {
-            log('Checking operator rights...');
+            console.log('Checking operator rights...');
             let approved = await this.isApproved(nft.collection, this.account, this.proxy);
             if(approved) {
-                log('DaVinci has operator rights');
+                console.log('DaVinci has operator rights');
             } else {
-                log('Granting Davinci operator rights...')
+                console.log('Granting Davinci operator rights...')
                 let res = await this.approve(nft.collection, this.proxy);
                 if(!res || res.error) { 
-                    log('Error approving operator rights');
+                    console.log('Error approving operator rights');
                     return; 
                 }
-                log('Davinci granted operator rights');
+                console.log('Davinci granted operator rights');
             }
         }
 
-        log('Saving file, please wait...');
+        console.log('Saving file, please wait...');
         let hash = await this.saveFile(nft.file, nft.cover, nft.media);
         //let hash = 'hash123456789';
-        if(!hash){ log('Error saving file to IPFS'); return; }
-        log('IPFS Hash', hash);
-        log('File saved!');
+        if(!hash){ console.log('Error saving file to IPFS'); return; }
+        console.log('IPFS Hash', hash);
+        console.log('File saved!');
 
         // Save metadata
         let meta = {
@@ -433,12 +432,12 @@ class DaVinciSDK {
             external_link : 'No'
         }
 
-        log('Saving metadata, please wait...');
+        console.log('Saving metadata, please wait...');
         let mhash = await this.saveMetadata(meta);
         //let mhash = 'meta123456789';
-        if(!mhash){ log('Error saving metadata to IPFS'); return; }
-        log('Meta Hash', mhash);
-        log('Metadata saved!');
+        if(!mhash){ console.log('Error saving metadata to IPFS'); return; }
+        console.log('Meta Hash', mhash);
+        console.log('Metadata saved!');
 
         // Assign IPFS hashes
         nft.cover     = hash;
@@ -453,10 +452,10 @@ class DaVinciSDK {
         let res = await this.mintToken(nft);
         //let res = {address:'0x1234567890'};
         if(!res.address){ console.error('Error minting NFT', res.error); return; }
-        log('TokenId', res.address);
+        console.log('TokenId', res.address);
 
         // Send token to server
-        log('Sending token to server');
+        console.log('Sending token to server');
         let rew = await fetch(this.server+'/token/new', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(nft)});
         let rex = await rew.json();
         //let rex = {ok:true};
@@ -467,34 +466,34 @@ class DaVinciSDK {
         if(nft.onsale){
             let rey, rez;
             if(nft.saletype==0){ // Direct sale
-                log('Creating sell order, please wait...');
+                console.log('Creating sell order, please wait...');
                 rey = await fetch(this.server+'/api/neworder/'+nft.address, {method:'GET', headers:{cookie:'user='+this.account}});
                 rez = await rey.json();
                 console.warn('Order Response', rez);
             } else if(nft.saletype==1){ // Auction
-                log('Creating auction order, please wait...');
+                console.log('Creating auction order, please wait...');
                 rey = await fetch(this.server+'/api/newauction/'+nft.address, {method: 'GET', headers:{cookie:'user='+this.account}});
                 rez = await rey.json();
                 console.warn('Auction Response', rez);
             }
         }
-        log('SUCCESS!');
-        log('Check your new NFT', this.server+'/view/'+nft.address);
+        console.log('SUCCESS!');
+        console.log('Check your new NFT', this.server+'/view/'+nft.address);
 
         return {address:nft.address, hash:hash, meta:mhash};
     }
 
     async isApproved(collection, owner, operator) {
-        log('Checking operator rights...')
-        //log('Collection ', collection);
-        //log('Token Owner', owner);
-        //log('Operator   ', operator);
+        console.log('Checking operator rights...')
+        //console.log('Collection ', collection);
+        //console.log('Token Owner', owner);
+        //console.log('Operator   ', operator);
 
         try {   
             let gas = { gasPrice: this.config.gasprice, gasLimit: this.config.gaslimit, from: this.account };
             let ctr = this.harmony.contracts.createContract(Token1155.abi, collection);
             let res = await ctr.methods.isApprovedForAll(owner, operator).call(gas);
-            log('isApproved?', res);
+            console.log('isApproved?', res);
             return res;
         } catch(ex){
             console.error('Approval error', ex)
@@ -504,10 +503,10 @@ class DaVinciSDK {
     }
 
     async approve(collection, operator) {
-        log('Approving operator...');
-        log('Collection ', collection);
-        log('Operator   ', operator);
-        log('Token Owner', this.account);
+        console.log('Approving operator...');
+        console.log('Collection ', collection);
+        console.log('Operator   ', operator);
+        console.log('Token Owner', this.account);
 
         try {
             //let gas = { gasPrice: hex(this.config.gasprice), gasLimit: hex(this.config.gaslimit), from: this.account };
@@ -518,11 +517,11 @@ class DaVinciSDK {
             let txid = null;
             if(res?.transaction?.txStatus == 'REJECTED') { 
                 txid = res?.transaction?.id || '0x0';
-                log('Rejected tx', txid);
+                console.log('Rejected tx', txid);
                 return {error:'Approval rejected', txid:txid};
             } else if (res?.transaction?.txStatus == 'CONFIRMED') {
                 txid = res?.transaction?.id || '0x0';
-                log('Approved tx', txid);
+                console.log('Approved tx', txid);
                 return {status:'SUCCESS', txid:txid};
             } else { 
                 return {error: 'Unknown status: '+(res?.transaction?.txStatus || 'Unknown')};
@@ -535,32 +534,32 @@ class DaVinciSDK {
     }
     
     async buy(address, owner) {
-        log('Buying artwork, please wait...');
-        if(!this.account){ log('Wallet not connected'); return; }
+        console.log('Buying artwork, please wait...');
+        if(!this.account){ console.log('Wallet not connected'); return; }
         let res = await fetch(this.server+'/api/artwork/'+address);
         let nft = await res.json();
-        if(!nft){ log('Artwork not found'); return; }
-        if(nft.error){ log('Error getting artwork info'); return; }
+        if(!nft){ console.log('Artwork not found'); return; }
+        if(nft.error){ console.log('Error getting artwork info'); return; }
         //console.log('Artwork', nft);
-        log('Artwork', nft.artid, nft.name);
+        console.log('Artwork', nft.artid, nft.name);
         let seller = nft.owner;
         let buyer  = this.account;
-        log('Seller', seller);
-        log('Buyer ', buyer);
+        console.log('Seller', seller);
+        console.log('Buyer ', buyer);
 
         if(seller==buyer){ 
-            log('You are the owner, can not buy this token');
+            console.log('You are the owner, can not buy this token');
             return;
         }
         if(!nft.onsale){
-            log('Token not for sale');
+            console.log('Token not for sale');
             return;
         }
         if(nft.copies<1){
-            log('No more copies available');
+            console.log('No more copies available');
             return;
         }
-        log('Confirming sale, please wait...');
+        console.log('Confirming sale, please wait...');
 
         try {
             let url   = this.server+'/api/orderbyartwork/'+nft.address;
@@ -568,25 +567,25 @@ class DaVinciSDK {
             let order = await res.json();
             //console.warn('Order', order);
             if(!order){ 
-                log('Sell order not created by owner yet');
+                console.log('Sell order not created by owner yet');
                 return;
             }
             let orderId = order.address;
-            log('OrderId', orderId);
+            console.log('OrderId', orderId);
 
             // Check approval
             let approved = await this.isApproved(nft.collection, seller, this.proxy);
             if(!approved) { 
-                log('Order has not been approved by seller');
+                console.log('Order has not been approved by seller');
                 return;
             }
 
             let wei, gas, ctr, jsn, txid, ok;
-            log('Sending payment, please wait...');
+            console.log('Sending payment, please wait...');
             wei = new this.harmony.utils.Unit(nft.saleprice).asOne().toWei();
             gas = { gasPrice: this.config.gasprice, gasLimit: this.config.gaslimit, value: wei, from: this.account };
             //console.log('Gas', gas);
-            //log('Wei', wei.toString());
+            //console.log('Wei', wei.toString());
             ctr = this.harmony.contracts.createContract(Market.abi, this.market);
             res = await ctr.methods.buy(orderId, buyer, 1).send(gas);
             //console.warn('Response', res);
@@ -596,11 +595,11 @@ class DaVinciSDK {
             if (res.transaction.txStatus == 'REJECTED') { ok = false; }
             else if (res.transaction.txStatus == 'CONFIRMED') { ok = true; }
             else {
-                log('Unknown status: '+res.transaction.txStatus);
+                console.log('Unknown status: '+res.transaction.txStatus);
                 return;
             }
             txid = res?.transaction?.id;
-            log('OK', ok, txid);
+            console.log('OK', ok, txid);
 
             if(ok) {
                 // Add token copies to owners table
@@ -623,7 +622,7 @@ class DaVinciSDK {
                 //console.log('Data', data);
 
                 if(nft.copies==1){
-                    log('Change owner from', seller, 'to', buyer);
+                    console.log('Change owner from', seller, 'to', buyer);
                     res = await fetch(this.server+'/api/changeowner', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(data)});
                     jsn = await res.json();
                     //console.warn('Response', jsn);
@@ -676,14 +675,14 @@ class DaVinciSDK {
                     console.warn('Error saving transfer', ex2);
                 }
 
-                log('Sale completed!');
+                console.log('Sale completed!');
                 return {status:'SUCCESS'};
             } else {
-                log('Error in buy order');
+                console.log('Error in buy order');
                 ctr.methods.buy(orderId, buyer, 1).call().then().catch(revertReason => {
                     console.error(revertReason);
                     if(revertReason.revert){
-                        log('Error in buy order: '+revertReason.revert);
+                        console.log('Error in buy order: '+revertReason.revert);
                     }
                 });
                 return;
@@ -692,13 +691,13 @@ class DaVinciSDK {
             console.warn('Contract error:', ex);
             return;
         }
-        log('Buy Token: Unknown error?');
+        console.log('Buy Token: Unknown error?');
     }
 
 /*
     async sell(address){
         let res, inf;
-        log('Creating sell order, please wait...');
+        console.log('Creating sell order, please wait...');
         try {
             res = await fetch(this.server+'/api/neworder/'+address, {method:'GET', headers:{cookie:'user='+this.account}});
             inf = await res.json();
@@ -711,7 +710,7 @@ class DaVinciSDK {
 
     async newAuction(address){
         let res, inf;
-        log('Creating auction, please wait...');
+        console.log('Creating auction, please wait...');
         try {
             res = await fetch(this.server+'/api/newauction/'+address, {method: 'GET', headers:{cookie:'user='+this.account}});
             inf = await res.json();
@@ -725,7 +724,7 @@ class DaVinciSDK {
 
     async explore(limit=100, page=0){
         let url, opt, res, inf;
-        log('Fetching NFTs, please wait...');
+        console.log('Fetching NFTs, please wait...');
         try {
             url = this.server+'/api/explore?'+queryParams({limit,page});
             opt = {method: 'GET'};
@@ -740,7 +739,7 @@ class DaVinciSDK {
 
     async creations(user, limit=100){
         let url, opt, res, inf;
-        log('Fetching NFTs, please wait...');
+        console.log('Fetching NFTs, please wait...');
         try {
             url = this.server+'/api/creations/'+user+'?limit='+limit;
             opt = {method: 'GET'}
@@ -762,8 +761,5 @@ class DaVinciSDK {
 }
 
 module.exports = DaVinciSDK;
-var global = global || {};
-global.window = global.window || {};
-global.window.DaVinciSDK = DaVinciSDK;
 
 // END
